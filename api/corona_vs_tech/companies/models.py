@@ -23,8 +23,3 @@ class Company(models.Model):
 
     def __str__(self):
         return f"{self.name}"
-
-    def save(self, *args, **kwargs):
-        self.name = f"{self.name}".title()
-        self.last_update = now()
-        return super().save(*args, **kwargs)

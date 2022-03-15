@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Company
+from api.corona_vs_tech.companies.models import Company
 
 
 class CompanyAdmin(admin.ModelAdmin):
