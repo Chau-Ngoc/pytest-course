@@ -1,12 +1,17 @@
+from django.core.mail import EmailMessage
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import Serializer
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from api.corona_vs_tech.companies.models import Company
-from api.corona_vs_tech.companies.serializers import CompanySerializer
+from api.corona_vs_tech.companies.serializers import (
+    CompanySerializer,
+    EmailSerializer,
+)
 
 
 def title_name(request: Request, serializer: Serializer):
@@ -52,3 +57,33 @@ class CompanyViewSet(ModelViewSet):
             serializer.save()
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class EmailView(APIView):
+    serializer_class = EmailSerializer
+
+    def post(self, request):
+        """
+        Send an email.
+
+        from: chaungoc.le1995@gmail.com
+
+        to: playerzawesome@gmail.com
+        """
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid()
+
+        subject = serializer.validated_data.get("subject")
+        body = serializer.validated_data.get("message")
+
+        mail = EmailMessage(
+            subject=subject,
+            body=body,
+            to=["playerzawesome@gmail.com"],
+        )
+        mail.send()
+
+        return Response(
+            {"status": "Success", "message": "Email was sent successfully!"},
+            status.HTTP_200_OK,
+        )
